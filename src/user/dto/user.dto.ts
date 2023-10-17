@@ -11,7 +11,7 @@ export class CreateUserDto {
   confirmPassword: number
   
   @ApiProperty({ description: '学号' })
-  studentNumber: string
+  studentNumber: number
   
   @ApiProperty({ description: '性别' })
   sex: string

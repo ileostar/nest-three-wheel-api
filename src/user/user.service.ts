@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import type { DeepPartial } from 'typeorm'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { bcrypt } from 'bcryptjs'
 import { User } from './models/user.entity'
 import type { CreateUserDto, LoginDto } from './dto/user.dto'
 
@@ -17,12 +18,22 @@ export class UserService {
    * @returns Promise<User>
    */
   async login(loginDto: LoginDto): Promise<string> {
-    // 这里可以进行登录验证逻辑，比如检查数据库中的用户名和密码是否匹配
-    // 如果验证通过，返回true，否则返回false
-    if (loginDto.studentNumber.toString.length !== 11 || loginDto.password.toString.length < 8 || loginDto.password.toString.length > 16) 
-      return '数据格式化有误'
-    
-    return '登陆成功'
+    const findUser = await this.UserRepository.findOne({
+      where: { student_number: loginDto.studentNumber },
+    })
+    // 没有找到
+    if (!findUser) 
+      return '用户不存在'
+
+    // 找到了对比密码
+    const compareRes: boolean = bcrypt.compareSync(loginDto.password, findUser.password)
+    // 密码不正确
+    if (!compareRes) 
+      return '密码不正确'
+    const payload = { username: findUser.username }
+
+    return this.JwtService.sign(payload)
+
   }
 
   /**
@@ -30,15 +41,25 @@ export class UserService {
    * @param createUserDto 
    * @returns Promise<User>
    */
-  createUser(createUserDto: CreateUserDto) {
-    const { username, password, email } = createUserDto
+  async createUser(createUserDto: CreateUserDto) {
+    const findUser = await this.UserRepository.findOne({
+      where: { username: createUserDto.username },
+    })
+    if (findUser && findUser.username === createUserDto.username) 
+      return '用户已存在'
+
+    // 对密码进行加密处理
+    const { username, password, email, studentNumber, sex, grade } = createUserDto
 
     const user = new User()
     user.username = username
-    user.password = password
     user.email = email
-
-    return this.UserRepository.save(user)
+    user.student_number = studentNumber
+    user.sex = sex
+    user.grade = grade
+    user.password = bcrypt.hashSync(password, 10)
+    await this.UserRepository.save(user)
+    return '注册成功'
   }
 
   /**
