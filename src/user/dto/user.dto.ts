@@ -2,16 +2,16 @@ import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateUserDto {
   @ApiProperty({ description: '学生姓名' })
-  username: string
+  stuName: string
 
   @ApiProperty({ description: '密码' })
-  password: number
+  password: string
   
   @ApiProperty({ description: '校验密码' })
-  confirmPassword: number
+  confirmPassword: string
   
   @ApiProperty({ description: '学号' })
-  studentNumber: number
+  stuNum: number
   
   @ApiProperty({ description: '性别' })
   sex: string
@@ -25,10 +25,10 @@ export class CreateUserDto {
 
 export class UserInfosDto {
   @ApiProperty({ description: '学生姓名' })
-  username: string
+  stuName: string
   
   @ApiProperty({ description: '学号' })
-  studentNumber: string
+  stuNum: string
   
   @ApiProperty({ description: '性别' })
   sex: string
@@ -42,10 +42,13 @@ export class UserInfosDto {
 
 export class LoginDto {
   @ApiProperty({ description: '学号' })
-  studentNumber: number
+  stuNum: number
 
   @ApiProperty({ description: '密码' })
   password: string
 }
 
-
+export class LoginRes {
+  @ApiProperty({ description: '认证Token' })
+  token: string
+}

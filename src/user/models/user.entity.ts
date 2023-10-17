@@ -1,11 +1,10 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
-import { bcrypt } from 'bcryptjs'
+import * as bcrypt from 'bcryptjs'
 
 @Entity('user')
 export class User {
-  @ApiProperty({ description: '自增 id' })
   @PrimaryGeneratedColumn('uuid')
   id: string
 
@@ -19,13 +18,14 @@ export class User {
 
   @Column({
     comment: '学号',
+    type: 'bigint',
   })
   student_number: number
 
   @Column({
     comment: '密码',
   })
-  password: number
+  password: string
 
   @Column({
     comment: '邮箱',

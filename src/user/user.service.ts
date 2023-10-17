@@ -2,7 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import type { DeepPartial } from 'typeorm'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
-import { bcrypt } from 'bcryptjs'
+import * as bcrypt from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt'
 import { User } from './models/user.entity'
 import type { CreateUserDto, LoginDto } from './dto/user.dto'
 
@@ -10,6 +11,7 @@ import type { CreateUserDto, LoginDto } from './dto/user.dto'
 export class UserService {
   constructor(
     @InjectRepository(User) private UserRepository: Repository<User>,
+    private readonly JwtService: JwtService,
   ) {}
 
   /**
@@ -19,7 +21,7 @@ export class UserService {
    */
   async login(loginDto: LoginDto): Promise<string> {
     const findUser = await this.UserRepository.findOne({
-      where: { student_number: loginDto.studentNumber },
+      where: { student_number: loginDto.stuNum },
     })
     // 没有找到
     if (!findUser) 
@@ -43,21 +45,23 @@ export class UserService {
    */
   async createUser(createUserDto: CreateUserDto) {
     const findUser = await this.UserRepository.findOne({
-      where: { username: createUserDto.username },
+      where: { username: createUserDto.stuName },
     })
-    if (findUser && findUser.username === createUserDto.username) 
+    if (findUser && findUser.username === createUserDto.stuName) 
       return '用户已存在'
+    if (createUserDto.password !== createUserDto.confirmPassword) 
+      return '两次密码不一致'
 
     // 对密码进行加密处理
-    const { username, password, email, studentNumber, sex, grade } = createUserDto
+    const { stuName, password, email, stuNum, sex, grade } = createUserDto
 
     const user = new User()
-    user.username = username
+    user.username = stuName
     user.email = email
-    user.student_number = studentNumber
+    user.student_number = stuNum
     user.sex = sex
     user.grade = grade
-    user.password = bcrypt.hashSync(password, 10)
+    user.password = password
     await this.UserRepository.save(user)
     return '注册成功'
   }
