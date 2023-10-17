@@ -15,19 +15,16 @@ export class User {
     default: '',
   })
   @IsNotEmpty()
-  @ApiProperty({ description: '学生姓名' })
   username: string
 
   @Column({
     comment: '学号',
   })
-  @ApiProperty({ description: '学号' })
   student_number: number
 
   @Column({
     comment: '密码',
   })
-  @ApiProperty({ description: '密码' })
   password: number
 
   @Column({
@@ -35,7 +32,6 @@ export class User {
     length: 100,
     default: '',
   })
-  @ApiProperty({ description: '邮箱' })
   email: string
 
   @Column({
@@ -43,13 +39,11 @@ export class User {
     length: 2,
     default: '男',
   })
-  @ApiProperty({ description: '性别' })
   sex: string
 
   @Column({
     comment: '年级',
   })
-  @ApiProperty({ description: '年级' })
   grade: number
 
   @Column({

@@ -6,7 +6,9 @@ import { AppModule } from './app.module'
 function setupSwagger(app) {
   const config = new DocumentBuilder()
     .setTitle('前端三轮考核接口')
-    .setDescription('师弟师妹们加油🦆~~~')
+    .setDescription(`师弟师妹们加油🦆~~~
+    考核题目：https://dkmjddbh0f.feishu.cn/docx/T7IAdyWpho6ZUhxkSuqciIj1nKQ?from=from_copylink
+    `)
     .setVersion('1.0')
     .build()
   const document = SwaggerModule.createDocument(app, config)

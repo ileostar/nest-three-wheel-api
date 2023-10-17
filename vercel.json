@@ -1,0 +1,16 @@
+{
+   "version": 2,
+   "name": "nest-three-wheel-demo",
+   "builds": [
+      {
+       "src": "dist/main.ts",
+       "use": "@vercel/node"
+      }
+    ],
+   "routes": [
+      {
+       "src": "/(.*)",
+       "dest": "dist/main.ts"
+      }
+    ]
+ }

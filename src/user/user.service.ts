@@ -3,7 +3,7 @@ import type { DeepPartial } from 'typeorm'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { User } from './models/user.entity'
-import type { CreateUserDto } from './dto/user.dto'
+import type { CreateUserDto, LoginDto } from './dto/user.dto'
 
 @Injectable()
 export class UserService {
@@ -12,11 +12,25 @@ export class UserService {
   ) {}
 
   /**
+   * 登陆
+   * @param loginDto
+   * @returns Promise<User>
+   */
+  async login(loginDto: LoginDto): Promise<string> {
+    // 这里可以进行登录验证逻辑，比如检查数据库中的用户名和密码是否匹配
+    // 如果验证通过，返回true，否则返回false
+    if (loginDto.studentNumber.toString.length !== 11 || loginDto.password.toString.length < 8 || loginDto.password.toString.length > 16) 
+      return '数据格式化有误'
+    
+    return '登陆成功'
+  }
+
+  /**
    * 创建用户
    * @param createUserDto 
    * @returns Promise<User>
    */
-  async createUser(createUserDto: CreateUserDto) {
+  createUser(createUserDto: CreateUserDto) {
     const { username, password, email } = createUserDto
 
     const user = new User()
@@ -28,11 +42,25 @@ export class UserService {
   }
 
   /**
+   * 查找所有用户
+   * @returns Promise<User>
+   */
+  async findAll(pageNum: number, pageCount: number): Promise<User[]> {
+    const skip = (pageCount - 1) * pageNum
+    const take = pageNum
+    return this.UserRepository.find({
+      take,
+      skip,
+    })
+  }
+
+  /**
    * 根据student_number查找用户
    * @param student_number
    * @returns Promise<User>
    */
   async findByStuNum(student_number: number): Promise<User> {
+
     const res = await this.UserRepository.findOne({
       where: {
         student_number,
@@ -46,13 +74,19 @@ export class UserService {
    * @param username
    * @returns Promise<User>
    */
-  async findByName(username: string): Promise<User> {
-    const res = await this.UserRepository.findOne({
+  async findByName(username: string, pageNum: number, pageCount: number): Promise<User[]> {
+    const skip = (pageCount - 1) * pageNum
+    const take = pageNum
+
+    const users = await this.UserRepository.find({
       where: {
         username,
       },
+      take,
+      skip,
     })
-    return res
+
+    return users
   }
 
   /**
