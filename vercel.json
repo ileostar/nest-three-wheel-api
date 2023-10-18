@@ -1,23 +1,22 @@
 {
-   "version": 2,
-   "name": "nest-three-wheel-demo",
-   "builds": [
-      {
-       "src": "dist/main.js",
-       "use": "@vercel/node"
-      }
-    ],
-   "routes": [
-      {
-       "src": "/(.*)",
-       "dest": "dist/main.ts", 
-        "methods": [
-          "GET",
-          "POST",
-          "PUT",
-          "DELETE",
-          "PATCH"
-        ]
-      }
-    ]
- }
+  "version": 2,
+  "builds": [
+    {
+      "src": "dist/main.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "dist/main.js",
+      "methods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH"
+      ]
+    }
+  ]
+}

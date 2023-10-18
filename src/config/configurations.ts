@@ -4,11 +4,11 @@ function loadConfig() {
 
   return {
     db: {
-      database: env.TYPEORM_DATABASE,
-      host: env.TYPEORM_HOST,
+      database: 'three-wheel',
+      host: 'rm-cn-9lb3fu86r000zd1o.rwlb.rds.aliyuncs.com',
       port: Number.parseInt(env.TYPEORM_PORT, 10) || 3306,
-      username: env.TYPEORM_USERNAME,
-      password: env.TYPEORM_PASSWORD,
+      username:'liuxingyu',
+      password: 'Liu20020820',
     },
   }
 }
