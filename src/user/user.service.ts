@@ -49,18 +49,21 @@ export class UserService {
     const findUser = await this.UserRepository.findOne({
       where: { username: createUserDto.stuName },
     })
+    const findUser2 = await this.UserRepository.findOne({
+      where: { student_number: createUserDto.stuNum },
+    })
     if (findUser && findUser.username === createUserDto.stuName) 
       return '用户已存在'
+    if (findUser2 && Number(findUser2.student_number) === createUserDto.stuNum) 
+      return '学号已存在'
+    if (createUserDto.stuName.length > 11 || createUserDto.stuName.length < 1) 
+      return '姓名格式不对'
     if (createUserDto.password !== createUserDto.confirmPassword) 
       return '两次密码不一致'
-    if (createUserDto.stuNum.toString.length !== 11) 
+    if (Object.is(createUserDto.stuNum.toLocaleString.length, 11)) 
       return '学号格式不对'
     if (createUserDto.password.length < 8 || createUserDto.password.length > 16) 
       return '密码格式不对'
-    if (createUserDto.stuNum.toString.length !== 11) 
-      return '学号格式不对'
-    if (createUserDto.stuName.length > 11 || createUserDto.stuName.length < 1) 
-      return '姓名格式不对'
 
     // 对密码进行加密处理
     const { stuName, password, email, stuNum, sex, grade } = createUserDto
