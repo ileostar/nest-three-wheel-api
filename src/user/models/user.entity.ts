@@ -1,6 +1,5 @@
 import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 import { IsNotEmpty } from 'class-validator'
-import { ApiProperty } from '@nestjs/swagger'
 import * as bcrypt from 'bcryptjs'
 
 @Entity('user')

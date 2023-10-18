@@ -1,10 +1,9 @@
-import { Body, Controller, Get, Param, Post, Query, Res } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { APIResponse } from 'src/response/ApiResponse'
 import { ResponseData } from 'src/response/ResponseFormat'
 import { CreateUserDto, LoginDto, LoginRes, UserInfosDto } from './dto/user.dto'
 import { UserService } from './user.service'
-import type { User } from './models/user.entity'
 
 @ApiTags('下面是需要用到的接口😀')
 @Controller('user')
@@ -19,7 +18,7 @@ export class UserController {
     const res = await this.userService.createUser(CreateUserDto)
     if (res === '注册成功') 
       return ResponseData.ok(null, res) 
-    else 
+    else
       return ResponseData.fail(res, 40001)
   }
 
@@ -28,7 +27,7 @@ export class UserController {
   @ApiOperation({ summary: '用于登录', description: '使用学号和密码登录（返回的Token添加在请求头Header中）' })
   async loginUser(@Body() loginDto: LoginDto) {
     const res = await this.userService.login(loginDto)
-    if (res === '用户不存在' || res === '密码不正确') 
+    if (res === '用户不存在' || res === '密码不正确' || res === '密码格式不对') 
       return ResponseData.fail(res, 40001)
     else 
       return ResponseData.ok({ token: res }, '登陆成功')
@@ -52,7 +51,16 @@ export class UserController {
     @Query('pageCount') pageCount: number,
   ) {
     const res = await this.userService.findAll(pageNum, pageCount)
-    return ResponseData.ok(res)
+    const resData = res.map((result) => {
+      const dto = new UserInfosDto()
+      dto.email = result.email
+      dto.stuNum = result.student_number
+      dto.stuName = result.username
+      dto.grade = result.grade
+      dto.sex = result.sex
+      return dto
+    })
+    return ResponseData.ok(resData)
   }
 
   @Get('findByStuNum')
@@ -67,7 +75,13 @@ export class UserController {
     @Param('stuNum') stuNum: number,
   ) {
     const res = await this.userService.findByStuNum(stuNum)
-    return ResponseData.ok(res)
+    const dto = new UserInfosDto()
+    dto.email = res.email
+    dto.stuNum = res.student_number
+    dto.stuName = res.username
+    dto.grade = res.grade
+    dto.sex = res.sex
+    return ResponseData.ok(dto)
   }
 
   @Get('findByStuName')
@@ -92,8 +106,17 @@ export class UserController {
     @Query('stuName') username: string,
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
-  ): Promise<ResponseData<User[]>> {
+  ): Promise<ResponseData<UserInfosDto[]>> {
     const res = await this.userService.findByName(username, pageNum, pageCount)
-    return ResponseData.ok(res)
+    const resData = res.map((result) => {
+      const dto = new UserInfosDto()
+      dto.email = result.email
+      dto.stuNum = result.student_number
+      dto.stuName = result.username
+      dto.grade = result.grade
+      dto.sex = result.sex
+      return dto
+    })
+    return ResponseData.ok(resData)
   }
 }

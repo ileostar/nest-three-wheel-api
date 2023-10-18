@@ -28,7 +28,7 @@ export class UserInfosDto {
   stuName: string
   
   @ApiProperty({ description: '学号' })
-  stuNum: string
+  stuNum: number
   
   @ApiProperty({ description: '性别' })
   sex: string

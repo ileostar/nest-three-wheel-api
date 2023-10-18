@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import type { DeepPartial } from 'typeorm'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -20,6 +20,8 @@ export class UserService {
    * @returns Promise<User>
    */
   async login(loginDto: LoginDto): Promise<string> {
+    if (loginDto.password.length < 8 || loginDto.password.length > 16) 
+      return '密码格式不对'
     const findUser = await this.UserRepository.findOne({
       where: { student_number: loginDto.stuNum },
     })
@@ -51,6 +53,14 @@ export class UserService {
       return '用户已存在'
     if (createUserDto.password !== createUserDto.confirmPassword) 
       return '两次密码不一致'
+    if (createUserDto.stuNum.toString.length !== 11) 
+      return '学号格式不对'
+    if (createUserDto.password.length < 8 || createUserDto.password.length > 16) 
+      return '密码格式不对'
+    if (createUserDto.stuNum.toString.length !== 11) 
+      return '学号格式不对'
+    if (createUserDto.stuName.length > 11 || createUserDto.stuName.length < 1) 
+      return '姓名格式不对'
 
     // 对密码进行加密处理
     const { stuName, password, email, stuNum, sex, grade } = createUserDto
