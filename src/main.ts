@@ -37,6 +37,7 @@ async function bootstrap() {
     credentials: true,
     maxAge: 3600,
   })
+  
   setupSwagger(app)
 
   // 配置静态文件中间件

@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { User } from '../models/user.entity'
 
 export class CreateUserDto {
   @ApiProperty({ description: '学生姓名' })
@@ -56,7 +55,7 @@ export class LoginRes {
 
 export class PagingUserData {
   @ApiProperty({ description: '分页数据' })
-  usersData: Array<UserInfosDto>
+  usersData: Array<unknown>
 
   @ApiProperty({ description: '分页总页' })
   pageTotals: number
