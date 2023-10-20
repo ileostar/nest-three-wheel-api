@@ -10,6 +10,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
 
+
 @Module({
   imports: [
     ServeStaticModule.forRoot({
@@ -49,3 +50,5 @@ import { UserModule } from './user/user.module'
   providers: [AppService],
 })
 export class AppModule {}
+
+

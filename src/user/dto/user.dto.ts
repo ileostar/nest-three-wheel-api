@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { User } from '../models/user.entity'
 
 export class CreateUserDto {
   @ApiProperty({ description: '学生姓名' })
@@ -51,4 +52,21 @@ export class LoginDto {
 export class LoginRes {
   @ApiProperty({ description: '认证Token' })
   token: string
+}
+
+export class PagingUserData {
+  @ApiProperty({ description: '分页数据' })
+  usersData: Array<UserInfosDto>
+
+  @ApiProperty({ description: '分页总页' })
+  pageTotals: number
+
+  @ApiProperty({ description: '当前页面' })
+  pageNum: number
+
+  @ApiProperty({ description: '每一页页面条数' })
+  pageCount: number
+
+  @ApiProperty({ description: '数据信息条数' })
+  totalCount: number
 }

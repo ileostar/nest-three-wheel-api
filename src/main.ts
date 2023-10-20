@@ -28,8 +28,15 @@ function setupSwagger(app) {
 }
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule)
-  
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true })
+  app.enableCors({
+    origin: true,
+    methods: 'GET,PUT,POST,DELETE',
+    allowedHeaders: 'Content-Type,Authorization',
+    exposedHeaders: 'Content-Range,X-Content-Range',
+    credentials: true,
+    maxAge: 3600,
+  })
   setupSwagger(app)
 
   // 配置静态文件中间件

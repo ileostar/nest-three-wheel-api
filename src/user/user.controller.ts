@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { APIResponse } from 'src/response/ApiResponse'
 import { ResponseData } from 'src/response/ResponseFormat'
-import { CreateUserDto, LoginDto, LoginRes, UserInfosDto } from './dto/user.dto'
+import { CreateUserDto, LoginDto, LoginRes, PagingUserData, UserInfosDto } from './dto/user.dto'
 import { UserService } from './user.service'
 
 @ApiTags('下面是需要用到的接口😀')
@@ -45,22 +45,13 @@ export class UserController {
     required: true,
   })
   @ApiOperation({ summary: '查询所有学生信息', description: '这里需要做一个分页，请传入pageNum每页页数,pageCount当前页数' })
-  @APIResponse([UserInfosDto])
+  @APIResponse(PagingUserData)
   async findAll(
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
-  ) {
+  ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findAll(pageNum, pageCount)
-    const resData = res.map((result) => {
-      const dto = new UserInfosDto()
-      dto.email = result.email
-      dto.stuNum = result.student_number
-      dto.stuName = result.username
-      dto.grade = result.grade
-      dto.sex = result.sex
-      return dto
-    })
-    return ResponseData.ok(resData)
+    return ResponseData.ok(res)
   }
 
   @Get('findByStuNum')
@@ -100,23 +91,14 @@ export class UserController {
     description: '当前页数',
     required: true,
   })
-  @APIResponse([UserInfosDto])
-  @ApiOperation({ summary: '根据学生姓名查找学生信息', description: '姓名可能会有重复的' })
+  @APIResponse(PagingUserData)
+  @ApiOperation({ summary: '根据学生姓名查找学生信息', description: '姓名可能会有重复的，所以会有分页' })
   async findByStuName(
     @Query('stuName') username: string,
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
-  ): Promise<ResponseData<UserInfosDto[]>> {
+  ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findByName(username, pageNum, pageCount)
-    const resData = res.map((result) => {
-      const dto = new UserInfosDto()
-      dto.email = result.email
-      dto.stuNum = result.student_number
-      dto.stuName = result.username
-      dto.grade = result.grade
-      dto.sex = result.sex
-      return dto
-    })
-    return ResponseData.ok(resData)
+    return ResponseData.ok(res)
   }
 }

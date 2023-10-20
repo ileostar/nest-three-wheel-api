@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import type { DeepPartial } from 'typeorm'
-import { Repository } from 'typeorm'
+import { Repository, getRepository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt'
 import { User } from './models/user.entity'
-import type { CreateUserDto, LoginDto } from './dto/user.dto'
+import { UserInfosDto } from './dto/user.dto'
+import type { CreateUserDto, LoginDto, PagingUserData } from './dto/user.dto'
+
 
 @Injectable()
 export class UserService {
@@ -83,13 +85,36 @@ export class UserService {
    * 查找所有用户
    * @returns Promise<User>
    */
-  async findAll(pageNum: number, pageCount: number): Promise<User[]> {
+  async findAll(pageNum: number, pageCount: number): Promise<PagingUserData> {
     const skip = (pageCount - 1) * pageNum
     const take = pageNum
-    return this.UserRepository.find({
-      take,
-      skip,
+
+    const [resData, totalCount] = await Promise.all([
+      this.UserRepository.find({
+        take,
+        skip,
+      }),
+      this.UserRepository.count(),
+    ])
+    
+    const usersData = resData.map((result) => {
+      const dto = new UserInfosDto()
+      dto.email = result.email
+      dto.stuNum = result.student_number
+      dto.stuName = result.username
+      dto.grade = result.grade
+      dto.sex = result.sex
+      return dto
     })
+    const pageTotals = Math.ceil(totalCount / pageNum)
+
+    return { 
+      usersData,
+      pageTotals,
+      totalCount,
+      pageNum,
+      pageCount,
+    }
   }
 
   /**
@@ -112,19 +137,43 @@ export class UserService {
    * @param username
    * @returns Promise<User>
    */
-  async findByName(username: string, pageNum: number, pageCount: number): Promise<User[]> {
+  async findByName(username: string, pageNum: number, pageCount: number): Promise<PagingUserData> {
     const skip = (pageCount - 1) * pageNum
     const take = pageNum
 
-    const users = await this.UserRepository.find({
-      where: {
-        username,
-      },
-      take,
-      skip,
+    const [resData, totalCount] = await Promise.all([
+      this.UserRepository.find({
+        where: {
+          username,
+        },
+        take,
+        skip,
+      }),
+      this.UserRepository.count({
+        where: {
+          username,
+        },
+      }),
+    ])
+    const usersData = resData.map((result) => {
+      const dto = new UserInfosDto()
+      dto.email = result.email
+      dto.stuNum = result.student_number
+      dto.stuName = result.username
+      dto.grade = result.grade
+      dto.sex = result.sex
+      return dto
     })
+    
+    const pageTotals = Math.ceil(totalCount / pageNum)
 
-    return users
+    return { 
+      usersData, 
+      pageTotals,
+      totalCount,
+      pageNum,
+      pageCount,
+    }
   }
 
   /**
