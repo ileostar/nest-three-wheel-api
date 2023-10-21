@@ -3,7 +3,6 @@ import { NestFactory } from '@nestjs/core'
 import type { NestExpressApplication } from '@nestjs/platform-express'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule } from './app.module'
-import { Cors } from './lib/Cors'
 
 function setupSwagger(app) {
   const config = new DocumentBuilder()
@@ -31,9 +30,15 @@ function setupSwagger(app) {
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule)
 
-  // eslint-disable-next-line no-new
-  new Cors(app)
-  
+  // 处理跨域
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+    allowedHeaders:['Authorization', 'content-type'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+  })
+
   setupSwagger(app)
 
   // 配置静态文件中间件
