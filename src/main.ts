@@ -9,6 +9,7 @@ function setupSwagger(app) {
     .setTitle('前端三轮考核接口')
     .setContact('考核题目链接☛', 'https://dkmjddbh0f.feishu.cn/docx/T7IAdyWpho6ZUhxkSuqciIj1nKQ?from=from_copylink', null)
     .setDescription('师弟师妹们加油🦆~~~')
+    .setBasePath('http://liuxinghao.top/')
     .setVersion('1.0')
     .build()
   const document = SwaggerModule.createDocument(app, config)
