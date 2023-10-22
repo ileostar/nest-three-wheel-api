@@ -4,7 +4,7 @@
 
 ## 项目描述
 
-该项目是一个练手项目，使用[Nest](https://github.com/nestjs/nest)框架进行编写，这里因为采用的是serveless服务形式，所以用来vercel服务+远程数据库（阿里云/腾讯云数据库/[ElephantSQL
+该项目是一个练手项目，使用[Nest](https://github.com/nestjs/nest)框架进行编写，这里因为采用的是serveless服务形式，使用的是vercel服务+远程数据库（阿里云/腾讯云数据库/[ElephantSQL
 ](https://www.elephantsql.com/)）的形式部署
 
 ## 安装
