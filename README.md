@@ -58,13 +58,12 @@ $ pnpm run test:cov
 
 export default loadConfig
 
-```
-
 ## 部署
 
 ```bash
-$ vercel login # 登陆vercel
+ # 登陆vercel
+$ vercel login
 
-$ pnpm vercel # 部署到vercel
-
+ # 部署到vercel
+$ pnpm vercel
 ```
