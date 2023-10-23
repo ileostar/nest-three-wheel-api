@@ -122,13 +122,18 @@ export class UserService {
    * @param student_number
    * @returns Promise<User>
    */
-  async findByStuNum(student_number: number): Promise<User> {
+  async findByStuNum(student_number: number): Promise<User | null> {
 
     const res = await this.UserRepository.findOne({
       where: {
         student_number,
       },
     })
+  
+    if (!res) 
+      return null
+    
+    
     return res
   }
 

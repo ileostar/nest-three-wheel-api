@@ -51,11 +51,11 @@ export class UserController {
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findAll(pageNum, pageCount)
-    return ResponseData.ok(res)
+    return ResponseData.ok(res, '查询成功')
   }
 
   @Get('findByStuNum')
-  @ApiParam({
+  @ApiQuery({
     name: 'stuNum',
     description: '学号',
     required: true,
@@ -63,16 +63,18 @@ export class UserController {
   @APIResponse(UserInfosDto)
   @ApiOperation({ summary: '根据学号查找学生信息', description: '学号不会重复，所以只返回一条信息' })
   async findByStuNum(
-    @Param('stuNum') stuNum: number,
+    @Query('stuNum') stuNum: number,
   ) {
     const res = await this.userService.findByStuNum(stuNum)
     const dto = new UserInfosDto()
-    dto.email = res.email
-    dto.stuNum = res.student_number
-    dto.stuName = res.username
-    dto.grade = res.grade
-    dto.sex = res.sex
-    return ResponseData.ok(dto)
+    if (res) {
+      dto.email = res.email
+      dto.stuNum = res.student_number
+      dto.stuName = res.username
+      dto.grade = res.grade
+      dto.sex = res.sex
+    }
+    return ResponseData.ok(dto, '查询结果为空')
   }
 
   @Get('findByStuName')
@@ -99,6 +101,6 @@ export class UserController {
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findByName(username, pageNum, pageCount)
-    return ResponseData.ok(res)
+    return ResponseData.ok(res, '查询成功')
   }
 }
