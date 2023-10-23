@@ -50,6 +50,9 @@ export class UserController {
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
+    if (!pageNum || !pageCount) 
+      return ResponseData.ok(null, '参数传递错误')
+    
     const res = await this.userService.findAll(pageNum, pageCount)
     let msg = '查询成功'
     if (res.totalCount === 0) 
@@ -69,6 +72,8 @@ export class UserController {
   async findByStuNum(
     @Query('stuNum') stuNum: number,
   ) {
+    if (!stuNum) 
+      return ResponseData.ok(null, '参数传递错误')
     const res = await this.userService.findByStuNum(stuNum)
     const dto = new UserInfosDto()
     let msg = '查询结果为空'
@@ -106,6 +111,8 @@ export class UserController {
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
+    if (!username || pageNum || pageCount) 
+      return ResponseData.ok(null, '参数传递错误')
     const res = await this.userService.findByName(username, pageNum, pageCount)
     let msg = '查询成功'
     if (res.totalCount === 0) 
