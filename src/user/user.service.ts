@@ -85,7 +85,7 @@ export class UserService {
    * 查找所有用户
    * @returns Promise<User>
    */
-  async findAll(pageNum: number, pageCount: number): Promise<PagingUserData> {
+  async findAll(pageNum: number, pageCount: number): Promise<PagingUserData | null> {
     const skip = (pageCount - 1) * pageNum
     const take = pageNum
 
@@ -96,6 +96,9 @@ export class UserService {
       }),
       this.UserRepository.count(),
     ])
+
+    if (resData.length === 0) 
+      return null
     
     const usersData = resData.map((result) => {
       const dto = new UserInfosDto()
@@ -107,7 +110,7 @@ export class UserService {
       return dto
     })
     const pageTotals = Math.ceil(totalCount / pageNum)
-
+    
     return { 
       usersData,
       pageTotals,
@@ -142,7 +145,7 @@ export class UserService {
    * @param username
    * @returns Promise<User>
    */
-  async findByName(username: string, pageNum: number, pageCount: number): Promise<PagingUserData> {
+  async findByName(username: string, pageNum: number, pageCount: number): Promise<PagingUserData | null> {
     const skip = (pageCount - 1) * pageNum
     const take = pageNum
 
@@ -160,6 +163,7 @@ export class UserService {
         },
       }),
     ])
+
     const usersData = resData.map((result) => {
       const dto = new UserInfosDto()
       dto.email = result.email

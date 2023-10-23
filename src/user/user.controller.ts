@@ -51,7 +51,11 @@ export class UserController {
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findAll(pageNum, pageCount)
-    return ResponseData.ok(res, '查询成功')
+    let msg = '查询成功'
+    if (res.totalCount === 0) 
+      msg = '查询结果为空'
+    
+    return ResponseData.ok(res, msg)
   }
 
   @Get('findByStuNum')
@@ -103,6 +107,11 @@ export class UserController {
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
     const res = await this.userService.findByName(username, pageNum, pageCount)
-    return ResponseData.ok(res, '查询成功')
+    let msg = '查询成功'
+    if (res.totalCount === 0) 
+      msg = '查询结果为空'
+    
+    
+    return ResponseData.ok(res, msg)
   }
 }
