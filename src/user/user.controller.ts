@@ -67,14 +67,16 @@ export class UserController {
   ) {
     const res = await this.userService.findByStuNum(stuNum)
     const dto = new UserInfosDto()
+    let msg = '查询结果为空'
     if (res) {
       dto.email = res.email
       dto.stuNum = res.student_number
       dto.stuName = res.username
       dto.grade = res.grade
       dto.sex = res.sex
+      msg = '查询成功'
     }
-    return ResponseData.ok(dto, '查询结果为空')
+    return ResponseData.ok(dto, msg)
   }
 
   @Get('findByStuName')
