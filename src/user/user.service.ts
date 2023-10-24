@@ -82,10 +82,10 @@ export class UserService {
   }
 
   /**
-   * 查找所有用户
+   * 查找所有用户（分页版）
    * @returns Promise<User>
    */
-  async findAll(pageNum: number, pageCount: number): Promise<PagingUserData | null> {
+  async findAllPaging(pageNum: number, pageCount: number): Promise<PagingUserData | null> {
     const skip = (pageCount - 1) * pageNum
     const take = pageNum
 
@@ -118,6 +118,27 @@ export class UserService {
       pageNum,
       pageCount,
     }
+  }
+
+  
+  /**
+   * 查找所有用户
+   * @returns Promise<User>
+   */
+  async findAll(): Promise<Array<UserInfosDto>> {
+    const resData = await this.UserRepository.find()
+
+    const usersData = resData.map((result) => {
+      const dto = new UserInfosDto()
+      dto.email = result.email
+      dto.stuNum = result.student_number
+      dto.stuName = result.username
+      dto.grade = result.grade
+      dto.sex = result.sex
+      return dto
+    })
+    
+    return usersData
   }
 
   /**

@@ -33,7 +33,7 @@ export class UserController {
       return ResponseData.ok({ token: res }, '登陆成功')
   }
 
-  @Get('findAll')
+  @Get('findAllPaging')
   @ApiQuery({
     name: 'pageNum',
     description: '每页条数',
@@ -44,21 +44,30 @@ export class UserController {
     description: '当前页数',
     required: true,
   })
-  @ApiOperation({ summary: '查询所有学生信息', description: '这里需要做一个分页，请传入pageNum每页页数,pageCount当前页数' })
+  @ApiOperation({ summary: '查询所有学生信息（分页版）', description: '这里需要做一个分页，请传入pageNum每页页数,pageCount当前页数' })
   @APIResponse(PagingUserData)
-  async findAll(
+  async findAllPaging(
     @Query('pageNum') pageNum: number,
     @Query('pageCount') pageCount: number,
   ): Promise<ResponseData<PagingUserData>> {
     if (!pageNum || !pageCount) 
       return ResponseData.ok(null, '参数传递错误')
     
-    const res = await this.userService.findAll(pageNum, pageCount)
+    const res = await this.userService.findAllPaging(pageNum, pageCount)
     let msg = '查询成功'
     if (res.totalCount === 0) 
       msg = '查询结果为空'
     
     return ResponseData.ok(res, msg)
+  }
+
+  
+  @Get('findAll')
+  @ApiOperation({ summary: '查询所有学生信息', description: '这里直接查询所有，用于数据可视化展示' })
+  @APIResponse(Array<UserInfosDto>)
+  async findAll(): Promise<ResponseData<Array<UserInfosDto>>> {
+    const res = await this.userService.findAll()
+    return ResponseData.ok(res, '查询成功')
   }
 
   @Get('findByStuNum')
