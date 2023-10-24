@@ -64,7 +64,7 @@ export class UserController {
   
   @Get('findAll')
   @ApiOperation({ summary: '查询所有学生信息', description: '这里直接查询所有，用于数据可视化展示' })
-  @APIResponse(Array<UserInfosDto>)
+  @APIResponse([UserInfosDto])
   async findAll(): Promise<ResponseData<Array<UserInfosDto>>> {
     const res = await this.userService.findAll()
     return ResponseData.ok(res, '查询成功')
