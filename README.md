@@ -29,6 +29,7 @@ function loadConfig() {
     },
   }
 }
+```
 
 ## 运行
 
